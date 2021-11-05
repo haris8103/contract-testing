@@ -37,32 +37,13 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> StdResult<Response> {
     match msg {
-        ExecuteMsg::AddCustomer {name , ssn, address, favouritecolor} => add_customer(deps, name , ssn, address, favouritecolor),
+        
         ExecuteMsg::AddFunction {first_number, second_number} => add_function(first_number, second_number),
+        //ExecuteMsg::AddCustomer {name , ssn, address, favouritecolor} => add_customer(deps, name , ssn, address, favouritecolor),
         //ExecuteMsg::Reset { count } => try_reset(deps, info, count),
     }
 }
 
-pub fn add_customer(deps: DepsMut, name : String, ssn : String, address : String, favouritecolor : String) -> StdResult<Response> {
-    let result = CUSTOMERS_MAPS.may_load(deps.storage, ssn.to_string());
-    if let Ok(Some(_)) = result {
-       return Err(StdError::generic_err("customer already exists")) 
-    } 
-    let state = State {
-        
-        name : name,
-        ssn: ssn, 
-        address : address, 
-        favouritecolor : favouritecolor
-    };
-    CUSTOMERS_MAPS.save(deps.storage, state.ssn.to_string(), &state)?;
-    Ok(Response::new()
-    .add_attribute("method", "try_increment")
-    .add_attribute("name", state.name)
-    .add_attribute("address", state.address)
-    .add_attribute("ssn", state.ssn)
-    .add_attribute("favouritecolor", state.favouritecolor))
-}
 
 
 pub fn add_function(first_number: u64, second_number: u64) -> StdResult<Response> {
@@ -70,6 +51,28 @@ pub fn add_function(first_number: u64, second_number: u64) -> StdResult<Response
     Ok(Response::new()
     .add_attribute("result", result.to_string()))
 }
+
+
+// #[cfg_attr(not(feature = "library"), entry_point)]
+// pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
+//     match msg {
+//         QueryMsg::GetCount {ssn} => to_binary(&query_count(deps, ssn)?),
+//     }
+// }
+
+// fn query_count(deps: Deps, ssn : String) -> StdResult<CountResponse> {
+//     let option = CUSTOMERS_MAPS.may_load(deps.storage, ssn)?;
+//     if let Some(state) = option{
+
+//         return Ok(CountResponse {  name : state.name, ssn: state.ssn, address : state.address, favouritecolor : state.favouritecolor });
+//     }
+//     else{
+//         return Ok(CountResponse {name : "Not Found".to_string(),  ssn : "Not Found".to_string(), address : "Not Found".to_string(), favouritecolor : "Not Found".to_string()});
+//     }
+    
+// }
+
+
 // pub fn try_reset(deps: DepsMut, info: MessageInfo, count: u32) -> Result<Response, ContractError> {
 //     STATE.update(deps.storage, |mut state| -> Result<_, ContractError> {
 //         if info.sender != state.owner {
@@ -80,25 +83,6 @@ pub fn add_function(first_number: u64, second_number: u64) -> StdResult<Response
 //     })?;
 //     Ok(Response::new().add_attribute("method", "reset"))
 // }
-
-#[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
-    match msg {
-        QueryMsg::GetCount {ssn} => to_binary(&query_count(deps, ssn)?),
-    }
-}
-
-fn query_count(deps: Deps, ssn : String) -> StdResult<CountResponse> {
-    let option = CUSTOMERS_MAPS.may_load(deps.storage, ssn)?;
-    if let Some(state) = option{
-
-        return Ok(CountResponse {  name : state.name, ssn: state.ssn, address : state.address, favouritecolor : state.favouritecolor });
-    }
-    else{
-        return Ok(CountResponse {name : "Not Found".to_string(),  ssn : "Not Found".to_string(), address : "Not Found".to_string(), favouritecolor : "Not Found".to_string()});
-    }
-    
-}
 
 // #[cfg(test)]
 // mod tests {
@@ -169,4 +153,25 @@ fn query_count(deps: Deps, ssn : String) -> StdResult<CountResponse> {
     //     let value: CountResponse = from_binary(&res).unwrap();
     //     assert_eq!(5, value.count);
     // }
+    // pub fn add_customer(deps: DepsMut, name : String, ssn : String, address : String, favouritecolor : String) -> StdResult<Response> {
+//     let result = CUSTOMERS_MAPS.may_load(deps.storage, ssn.to_string());
+//     if let Ok(Some(_)) = result {
+//        return Err(StdError::generic_err("customer already exists")) 
+//     } 
+//     let state = State {
+        
+//         name : name,
+//         ssn: ssn, 
+//         address : address, 
+//         favouritecolor : favouritecolor
+//     };
+//     CUSTOMERS_MAPS.save(deps.storage, state.ssn.to_string(), &state)?;
+//     Ok(Response::new()
+//     .add_attribute("method", "try_increment")
+//     .add_attribute("name", state.name)
+//     .add_attribute("address", state.address)
+//     .add_attribute("ssn", state.ssn)
+//     .add_attribute("favouritecolor", state.favouritecolor))
+// }
+
 //}
